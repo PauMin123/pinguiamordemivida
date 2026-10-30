@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi Pingüicolochita 💌</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins para la interfaz y Kalam para la carta escrita a mano -->
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            /* Fondo de degradado pastel romántico */
+            background: linear-gradient(135deg, #ffe4e6 0%, #ffedd5 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            /* Evitar scroll durante las animaciones */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .font-kalam {
+            font-family: 'Kalam', cursive;
+        }
+
+        /* Estilo de la tarjetita de papel */
+        .papeleria-fina {
+            background-color: #fffdf9;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1), 0 0 15px rgba(251, 207, 232, 0.3);
+            border: 1px solid rgba(251, 207, 232, 0.4);
+        }
+
+        /* El detalle de cinta "washi tape" en la parte superior */
+        .washi-tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 120px;
+            height: 30px;
+            background-color: rgba(251, 161, 161, 0.4);
+            backdrop-filter: blur(2px);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+            border-radius: 2px;
+            z-index: 10;
+        }
+
+        /* Animación suave para cambiar de textos */
+        .fade-transition {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Animación de la lluvia de emojis */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .falling-emoji {
+            position: fixed;
+            animation: fall linear forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Transiciones de pantalla */
+        .screen {
+            transition: opacity 0.8s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="relative text-gray-800 flex items-center justify-center">
+
+    <!-- PANTALLA 1: EL SOBRE INICIAL -->
+    <div id="intro-screen" class="screen absolute inset-0 flex flex-col items-center justify-center z-50">
+
+        <h1 class="text-3xl md:text-4xl font-semibold text-rose-500 mb-8 text-center px-4 drop-shadow-sm">
+            Para ti, mi Pingüicolochita 🐧❤️
+        </h1>
+
+        <!-- Icono de sobre animado -->
+        <div onclick="abrirCarta()" class="relative cursor-pointer group mb-10 transform transition hover:scale-110">
+            <div class="animate-bounce">
+                <!-- SVG de Sobre de alta calidad -->
+                <svg viewBox="0 0 24 24" class="w-32 h-32 md:w-40 md:h-40 text-rose-400 drop-shadow-xl"
+                    fill="currentColor">
+                    <path
+                        d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z">
+                    </path>
+                </svg>
+                <!-- Corazón en el centro -->
+                <span
+                    class="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl group-hover:scale-125 transition-transform duration-300">❤️</span>
+            </div>
+        </div>
+
+        <p class="text-rose-400 text-lg font-medium animate-pulse tracking-wide text-center">
+            Toca el sobre para abrir tu cartita
+        </p>
+
+    </div>
+
+    <!-- PANTALLA 2: LECTURA DE LA CARTA -->
+    <div id="reading-screen"
+        class="screen absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none z-40 px-5">
+
+        <!-- Tarjeta de Papelería Fina -->
+        <div class="papeleria-fina relative w-full max-w-md rounded-2xl p-8 md:p-10 mb-8">
+            <div class="washi-tape"></div>
+
+            <!-- Contenedor del texto de la carta -->
+            <div class="min-h-[220px] flex items-center justify-center">
+                <p id="card-text"
+                    class="font-kalam text-2xl md:text-3xl leading-relaxed text-gray-700 text-center fade-transition whitespace-pre-line">
+                    <!-- El texto se inyectará aquí -->
+                </p>
+            </div>
+        </div>
+
+        <!-- Botón de avance -->
+        <button id="next-btn" onclick="siguienteCartita()"
+            class="bg-white/80 backdrop-blur-sm border-2 border-rose-300 text-rose-500 font-semibold text-lg md:text-xl py-3 px-8 rounded-full shadow-lg transform transition hover:bg-rose-50 hover:scale-105 active:scale-95">
+            Siguiente 💌
+        </button>
+
+    </div>
+
+    <script>
+        // Textos exactos de las cartitas
+        const cartas = [
+            "Estimada Pingüicolochita:\n\nLe escribo esta carta tratando de poner en palabras todo lo que siento por ti...",
+            "Desde el primer día en el que te conocí sentí una conexión muy especial, como si nos conociéramos de siempre. ✨",
+            "Y aunque me trataba de ver seguro la primera vez que salimos, la verdad es que sentía muchos nervios... pero de esos que te dan mariposas en el estómago. 🦋\n\nCuando veo esa sonrisa y esos ojitos, sé que llegué a mi hogar. 🏡",
+            "Nunca quiero que este sentimiento tan bonito se termine. Cuando hablo del futuro contigo, créeme que es lo que más deseo con todo mi corazón. ❤️",
+            "Sé que a veces puedo decir cosas que te hacen sentir mal, pero jamás lo he hecho con mala intención.\n\nQuiero decirte de todo corazón que lo siento si te he herido con mis palabras o acciones. Voy a cambiar eso, te lo prometo. 🥺",
+            "Y la verdad, no quiero que pienses que tu altura es un defecto en ti, porque no lo es mi amor...\n\nPara mí, y a mis ojos, tú eres perfecta tal y como eres. 📏💖",
+            "Te pinguiamo con todo mi corazoncito mi amorcito. Tú eres la persona que me enseñó a amar y a sentir ese sentimiento tan bonito de sentirse amado. 🐧❤️",
+            "Eres la mujer que yo pedí siempre para mi vida y te amo más que a nada.\n\nPreferiría morir antes que estar toda una vida sin ti, porque tú eres el amor de mi vida. Te amo mucho mucho. ❤️🥰"
+        ];
+
+        let indiceActual = 0;
+        const introScreen = document.getElementById('intro-screen');
+        const readingScreen = document.getElementById('reading-screen');
+        const cardText = document.getElementById('card-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Transición del sobre a la carta
+        function abrirCarta() {
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.classList.add('hidden');
+
+                // Mostrar pantalla de lectura
+                readingScreen.classList.remove('pointer-events-none');
+                readingScreen.style.opacity = '1';
+
+                // Cargar primera carta
+                mostrarTexto(cartas[indiceActual]);
+            }, 800);
+        }
+
+        // Animación suave de cambio de texto
+        function mostrarTexto(texto) {
+            cardText.classList.add('fade-out');
+
+            setTimeout(() => {
+                cardText.textContent = texto;
+                cardText.classList.remove('fade-out');
+            }, 500); // Esperar a que se desvanezca para cambiar el texto
+        }
+
+        // Lógica del botón de siguiente
+        function siguienteCartita() {
+            // Si ya estamos en la última tarjeta y presiona el botón sorpresa
+            if (indiceActual === cartas.length - 1) {
+                lluviaDeAmor();
+                // Opcional: Ocultar el botón después de presionarlo
+                nextBtn.style.opacity = '0';
+                nextBtn.style.pointerEvents = 'none';
+                return;
+            }
+
+            // Avanzar índice
+            indiceActual++;
+
+            // Si llegamos a la última carta, cambiar el texto y estilo del botón
+            if (indiceActual === cartas.length - 1) {
+                nextBtn.textContent = "Te amo 🐧❤️";
+                nextBtn.classList.remove('bg-white/80', 'text-rose-500', 'border-rose-300');
+                nextBtn.classList.add('bg-gradient-to-r', 'from-rose-400', 'to-pink-500', 'text-white', 'border-none', 'animate-pulse');
+            }
+
+            // Mostrar el nuevo texto
+            mostrarTexto(cartas[indiceActual]);
+        }
+
+        // Sorpresa final: Lluvia de corazones y pingüinos
+        function lluviaDeAmor() {
+            const emojis = ['❤️', '🐧', '💖', '', '💘', '🦋'];
+            const cantidad = 80;
+
+            for (let i = 0; i < cantidad; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.className = 'falling-emoji text-3xl md:text-5xl';
+
+                    // Posición horizontal aleatoria
+                    el.style.left = Math.random() * 100 + 'vw';
+
+                    // Duración de caída aleatoria (entre 3s y 6s)
+                    el.style.animationDuration = (Math.random() * 3 + 3) + 's';
+
+                    document.body.appendChild(el);
+
+                    // Limpiar el elemento del DOM después de que termine la animación
+                    setTimeout(() => el.remove(), 6000);
+                }, i * 50); // Escalonar la aparición de los emojis
+            }
+        }
+    </script>
+</body>
+
+</html>
